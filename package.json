@@ -1,0 +1,19 @@
+{
+  "name": "discord-scoreboard-tracker",
+  "version": "1.0.0",
+  "description": "Tracks the reactions of discord messages and sends them to a scoreboard.",
+  "license": "MIT",
+  "author": "Golinth",
+  "type": "discordjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.17.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "eslint": "^9.19.0"
+  }
+}
