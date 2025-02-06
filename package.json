@@ -4,16 +4,20 @@
   "description": "Tracks the reactions of discord messages and sends them to a scoreboard.",
   "license": "MIT",
   "author": "Golinth",
-  "type": "discordjs",
+  "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "discord.js": "^14.17.3"
+    "discord.js": "^14.17.3",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
     "eslint": "^9.19.0"
   }
 }
