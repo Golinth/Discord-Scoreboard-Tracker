@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-// const Sequelize = require('sequelize');
+const { Scoreboard } = require('../../index.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -10,8 +10,13 @@ module.exports = {
 				.setDescription('The user to retrieve the score for.')),
 	async execute(interaction) {
 		const target = interaction.options.getUser('user') ?? interaction.user;
-		// db.run();
-		await interaction.reply(`${target.displayName} has a score of 0`);
+		const targetUser = await Scoreboard.findOne({ where: { username: target.username } });
+		if (targetUser) {
+			const currentScore = targetUser.total_score;
+			await interaction.reply(`${target.displayName} has a score of ${currentScore}.`);
+		} else {
+			await interaction.reply(`${target.displayName} has no score!`);
+		}
 	},
 
 };

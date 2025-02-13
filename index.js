@@ -10,28 +10,28 @@ const client = new Client({
 });
 
 
+// Begin bad DB stuff
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
 	storage: 'database.sqlite',
 });
 
-// Create an accessable sql class
+// Create accessable sql classes
 class Scoreboard extends Model {
-	getId() {
-		return this.id;
-	}
-	getUsername() {
-		return this.username;
-	}
-	getTotalScore() {
-		return this.total_score;
-	}
 	async syncronize() {
 		await sequelize.sync();
 		console.log('Scoreboard syncronized!');
 	}
 }
-// Init the database
+
+class ReactionList extends Model {
+	async syncronize() {
+		await sequelize.sync();
+		console.log('ReactionList syncronized!');
+	}
+}
+
+// Init the databases
 Scoreboard.init({
 	user_id: {
 		type: DataTypes.STRING,
@@ -45,12 +45,35 @@ Scoreboard.init({
 		type: DataTypes.INTEGER,
 		defaultValue: 0,
 	},
+	display_name: {
+		type: DataTypes.STRING,
+	},
 }, {
 	sequelize,
 	modelName: 'Scoreboard',
 });
 
-module.exports = Scoreboard;
+ReactionList.init({
+	reaction_id: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true,
+	},
+	score_worth: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0,
+	},
+}, {
+	sequelize,
+	modelName: 'ReactionList',
+});
+
+module.exports = {
+	Scoreboard,
+	ReactionList,
+};
+// End bad DB stuff
+
 
 // Init the command variables
 client.commands = new Collection();
