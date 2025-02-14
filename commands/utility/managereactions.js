@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { ReactionList } = require('../../index.js');
-// const sqlite3 = require('sqlite3');
-// const db = new sqlite3.Database('scoreboard.db');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -31,14 +29,10 @@ module.exports = {
 					option.setName('reaction').setDescription('The reaction to remove').setRequired(true))),
 
 	async execute(interaction) {
-		console.log('\nMR Interaction Started');
 		if (interaction.options.getSubcommand() === 'add') {
-			console.log('MR Add Interaction Started');
 
 			const react = interaction.options.getString('reaction');
 			const score = interaction.options.getInteger('score');
-			console.log(`trying to add ${react} with score ${score}`);
-
 			try {
 				const newReact = await ReactionList.create({
 					reaction_id: react,
@@ -47,13 +41,10 @@ module.exports = {
 				await newReact.save();
 				await interaction.reply(`${react} now has a score of ${score}`);
 			} catch {
-				console.log(`Unable to add reaction ${react} to DB`);
 				await interaction.reply(`Unable to add reaction ${react}. Has it been added already?`);
 			}
 
 		} else if (interaction.options.getSubcommand() === 'modify') {
-			console.log('MR Modify Interaction Started');
-
 			const react = interaction.options.getString('reaction');
 			const score = interaction.options.getInteger('score');
 			console.log(`trying to modify ${react} to score ${score}`);
@@ -67,7 +58,6 @@ module.exports = {
 			}
 
 		} else if (interaction.options.getSubcommand() === 'remove') {
-			console.log('MR Subtract Interaction Started');
 			const react = interaction.options.getString('reaction');
 
 			await ReactionList.destroy({
@@ -78,7 +68,6 @@ module.exports = {
 
 			await interaction.reply(`${react} now has a score of 0`);
 		}
-		console.log('MR Interaction Ended\n');
 	},
 
 };

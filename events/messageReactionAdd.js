@@ -1,5 +1,6 @@
 const { Events } = require('discord.js');
 const { Scoreboard, ReactionList } = require('../index.js');
+const { clientId } = require('../config.json');
 
 module.exports = {
 	name: Events.MessageReactionAdd,
@@ -30,7 +31,13 @@ module.exports = {
 		if (reactionCost != 0) {
 			const userExists = await Scoreboard.findOne({ where: { username: authorUser.username } });
 			if (userExists) {
+				if (authorUser.id == clientId) {
+					return;
+				}
 				const currentScore = userExists.total_score;
+				if (authorUser.username === user.username && reactionCost > 0) {
+					reactionCost *= -1;
+				}
 				const newScore = reactionCost + currentScore;
 
 				const affectedRows = await Scoreboard.update({ total_score: newScore }, { where: { username: authorUser.username } });
