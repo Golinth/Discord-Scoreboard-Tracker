@@ -1,6 +1,5 @@
 const { Events } = require('discord.js');
 const { Scoreboard, ReactionList } = require('../index.js');
-const { clientId } = require('../config.json');
 
 module.exports = {
 	name: Events.MessageReactionRemove,
@@ -27,30 +26,15 @@ module.exports = {
 		}
 
 		if (reactionScore != null && !authorUser.bot) {
-			const userExists = await Scoreboard.findOne({ where: { user_id: authorUser.id } });
-			if (userExists) {
-				if (userExists.user_id === clientId) return;
-				if (authorUser.id === user.id && reactionScore > 0) reactionScore *= -1;
 
-				const newScore = userExists.total_score - reactionScore;
+			if (authorUser.id === user.id && reactionScore > 0) reactionScore *= -1;
 
-				await Scoreboard.update({
-					display_name: authorUser.displayName,
-					total_score: newScore,
-					total_reacts: userExists.total_reacts - 1 },
-				{ where: { user_id: authorUser.id } });
+			await Scoreboard.destroy({ where: {
+				message_id: reaction.message.id,
+				user_id: user.id,
+				reaction_id: reactExists.reaction_id,
+			} });
 
-			} else {
-				const newUser = await Scoreboard.create({
-					user_id: authorUser.id,
-					display_name: authorUser.displayName,
-					total_score: 0,
-					total_reacts: 0,
-				});
-				await newUser.save();
-
-				console.log(`Created new DB entry for ${newUser.username}.`);
-			}
 
 		}
 	},

@@ -10,7 +10,9 @@ const client = new Client({
 });
 
 
-// Begin bad DB stuff
+/**
+ * Begin bad DB stuff
+ */
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
 	storage: 'database.sqlite',
@@ -33,19 +35,23 @@ class ReactionList extends Model {
 
 // Init the databases
 Scoreboard.init({
+	message_id: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	message_user_id: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
 	user_id: {
 		type: DataTypes.STRING,
 		allowNull: false,
-		unique: true,
 	},
-	display_name: {
+	reaction_id: {
 		type: DataTypes.STRING,
+		allowNull: false,
 	},
-	total_score: {
-		type: DataTypes.INTEGER,
-		defaultValue: 0,
-	},
-	total_reacts: {
+	score_worth: {
 		type: DataTypes.INTEGER,
 		defaultValue: 0,
 	},
@@ -69,33 +75,13 @@ ReactionList.init({
 	modelName: 'ReactionList',
 });
 
-NukeTracker.init({
-	message_id: {
-		type: DataTypes.STRING,
-		allowNull: false,
-		unique: false,
-	},
-	user_id: {
-		type: DataTypes.STRING,
-		allowNull: false,
-		unique: false,
-	},
-	reaction_id: {
-		type: DataTypes.STRING,
-		allowNull: false,
-		unique: false,
-	},
-}, {
-	sequelize,
-	modelName: 'NukeTracker',
-});
-
 module.exports = {
 	Scoreboard,
 	ReactionList,
-	NukeTracker,
 };
-// End bad DB stuff
+/**
+ * End bad DB stuff
+ */
 
 
 // Init the command variables

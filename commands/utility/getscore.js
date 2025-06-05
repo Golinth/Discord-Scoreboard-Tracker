@@ -10,9 +10,9 @@ module.exports = {
 				.setDescription('The user to retrieve the score for.')),
 	async execute(interaction) {
 		const target = interaction.options.getUser('user') ?? interaction.user;
-		const targetUser = await Scoreboard.findOne({ where: { username: target.username } });
-		if (targetUser) {
-			const currentScore = targetUser.total_score;
+		const currentScore = await Scoreboard.sum('score_worth', { where: { message_user_id: target.id } });
+
+		if (currentScore) {
 			await interaction.reply(`${target.displayName} has a score of ${currentScore}.`);
 		} else {
 			await interaction.reply(`${target.displayName} has no score!`);
