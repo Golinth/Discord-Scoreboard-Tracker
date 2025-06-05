@@ -20,19 +20,19 @@ module.exports = {
 			fullEmoji = reaction.emoji.name;
 		}
 
-		let reactionCost = null;
+		let reactionScore = null;
 		const reactExists = await ReactionList.findOne({ where: { reaction_id: fullEmoji } });
 		if (reactExists) {
-			reactionCost = reactExists.score_worth;
+			reactionScore = reactExists.score_worth;
 		}
 
-		if (reactionCost != null) {
+		if (reactionScore != null && !authorUser.bot) {
 			const userExists = await Scoreboard.findOne({ where: { user_id: authorUser.id } });
 			if (userExists) {
 				if (userExists.user_id === clientId) return;
-				if (authorUser.id === user.id && reactionCost > 0) reactionCost *= -1;
+				if (authorUser.id === user.id && reactionScore > 0) reactionScore *= -1;
 
-				const newScore = reactionCost + userExists.total_score;
+				const newScore = reactionScore + userExists.total_score;
 
 				await Scoreboard.update({
 					display_name: authorUser.displayName,
@@ -44,13 +44,15 @@ module.exports = {
 				const newUser = await Scoreboard.create({
 					user_id: authorUser.id,
 					display_name: authorUser.displayName,
-					total_score: reactionCost,
+					total_score: reactionScore,
 					total_reacts: 1,
 				});
 				await newUser.save();
 
 				console.log(`Created new DB entry for ${newUser.username}.`);
 			}
+
+
 		}
 	},
 };
