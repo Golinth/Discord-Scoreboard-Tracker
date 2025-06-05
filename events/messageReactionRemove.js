@@ -8,6 +8,7 @@ module.exports = {
 
 		try {
 			await reaction.fetch();
+			await reaction.message.fetch();
 		} catch (error) {
 			console.error('Something went wrong when fetching the message:', error);
 			return;
@@ -19,39 +20,32 @@ module.exports = {
 			fullEmoji = reaction.emoji.name;
 		}
 
-		let reactionCost = 0;
+		let reactionCost = null;
 		const reactExists = await ReactionList.findOne({ where: { reaction_id: fullEmoji } });
 		if (reactExists) {
 			reactionCost = reactExists.score_worth;
 		}
 
-		console.log(`${user.username} has removed reaction ${reaction.emoji} from ${authorUser.username}'s message "${reaction.message.content}".`);
-
-		if (reactionCost != 0) {
-			const userExists = await Scoreboard.findOne({ where: { username: authorUser.username } });
+		if (reactionCost != null) {
+			const userExists = await Scoreboard.findOne({ where: { user_id: authorUser.id } });
 			if (userExists) {
-				if (userExists.user_id == clientId) {
-					return;
-				}
-				const currentScore = userExists.total_score;
-				if (authorUser.username === user.username && reactionCost > 0) {
-					reactionCost *= -1;
-				}
-				const newScore = currentScore - reactionCost;
+				if (userExists.user_id === clientId) return;
+				if (authorUser.id === user.id && reactionCost > 0) reactionCost *= -1;
 
-				const affectedRows = await Scoreboard.update({ total_score: newScore }, { where: { username: authorUser.username } });
-				await Scoreboard.update({ display_name: authorUser.displayName }, { where: { username: authorUser.username } });
+				const newScore = userExists.total_score - reactionCost;
 
-				if (affectedRows > 0) {
-					console.log(`${authorUser.username} now has ${newScore} points.`);
-				}
+				await Scoreboard.update({
+					display_name: authorUser.displayName,
+					total_score: newScore,
+					total_reacts: userExists.total_reacts - 1 },
+				{ where: { user_id: authorUser.id } });
 
 			} else {
 				const newUser = await Scoreboard.create({
 					user_id: authorUser.id,
-					username: authorUser.username,
-					total_score: 0,
 					display_name: authorUser.displayName,
+					total_score: 0,
+					total_reacts: 0,
 				});
 				await newUser.save();
 

@@ -38,15 +38,16 @@ Scoreboard.init({
 		allowNull: false,
 		unique: true,
 	},
-	username: {
+	display_name: {
 		type: DataTypes.STRING,
 	},
 	total_score: {
 		type: DataTypes.INTEGER,
 		defaultValue: 0,
 	},
-	display_name: {
-		type: DataTypes.STRING,
+	total_reacts: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0,
 	},
 }, {
 	sequelize,
