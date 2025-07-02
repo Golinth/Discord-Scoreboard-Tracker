@@ -26,7 +26,7 @@ module.exports = {
 				}
 			}
 
-			const userScoreboard = [user.globalName, curScore];
+			const userScoreboard = [user.globalName || user.displayName, curScore];
 			finalScores.push(userScoreboard);
 		}
 
@@ -37,8 +37,7 @@ module.exports = {
 			finalString = finalString + finalScores[i].join(': ') + '\n';
 		}
 
-		if (finalString == null || finalString == '') await interaction.reply('There is no scoreboard. (How did that happen?)');
-		else await interaction.reply(finalString);
+		await interaction.reply(finalString || 'There is no scoreboard. (How did that happen?)');
 	},
 
 };
